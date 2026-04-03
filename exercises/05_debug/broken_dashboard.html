@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cafe Batumi - March 2026 Social Media Report</title>
-    <link href="https://fonts.googleapis.com/css2?Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         * {
@@ -15,7 +15,8 @@
 
         body {
             font-family: 'Montserrat', sans-serif;
-            background: $191919;
+            background: #191919 url('https://media.istockphoto.com/id/2233699051/photo/aerial-view-of-endless-sea-and-cloudy-sky.jpg?s=1024x1024&w=is&k=20&c=rORbjuxBEZG9L15ciQqZFoEFS1aQS1PkMAwacM86UI8=') no-repeat center center fixed;
+            background-size: cover;
             color: #e0e0e0;
             min-height: 100vh;
         }
@@ -44,7 +45,7 @@
 
         .header-left p {
             font-size: 14px;
-            color: #888;
+            color: #cccccc;
             margin-top: 4px;
         }
 
@@ -54,7 +55,7 @@
 
         .header-right .brand {
             font-size: 12px;
-            color: #ffc711;
+            color: #ffffff;
             font-weight: 600;
             letter-spacing: 2px;
             text-transform: uppercase;
@@ -62,7 +63,7 @@
 
         .header-right .period {
             font-size: 14px;
-            color: #888;
+            color: #cccccc;
             margin-top: 4px;
         }
 
@@ -70,7 +71,7 @@
         .section-title {
             font-size: 18px;
             font-weight: 600;
-            color: #ffc711;
+            color: #ffffff;
             margin-bottom: 20px;
             margin-top: 48px;
         }
@@ -84,15 +85,25 @@
         }
 
         .stat-card {
-            background: #1e1e1e;
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 28px 24px;
-            border: 1px solid #2a2a2a;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-left: 4px solid #ffc711;
+        }
+
+        .helper-text {
+            font-size: 12px;
+            color: #bbbbbb;
+            font-style: italic;
+            margin-bottom: 16px;
+            margin-top: -12px;
         }
 
         .stat-card .label {
             font-size: 12px;
-            color: #888;
+            color: #cccccc;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 8px;
@@ -112,9 +123,10 @@
 
         /* Data Table */
         .table-container {
-            background: #1e1e1e;
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
-            border: 1px solid #2a2a2a;
+            border: 1px solid rgba(255, 255, 255, 0.06);
             overflow: hidden;
             margin-bottom: 48px;
         }
@@ -125,11 +137,11 @@
         }
 
         .table-container th {
-            background: #252525;
+            background: rgba(37, 37, 37, 0.9);
             padding: 14px 20px;
             text-align: left;
             font-size: 12px;
-            color: #888;
+            color: #cccccc;
             text-transform: uppercase;
             letter-spacing: 1px;
             font-weight: 600;
@@ -160,9 +172,10 @@
 
         /* Chart Section */
         .chart-container {
-            background: #1e1e1e;
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
-            border: 1px solid #2a2a2a;
+            border: 1px solid rgba(255, 255, 255, 0.06);
             padding: 32px 24px;
             margin-bottom: 48px;
         }
@@ -188,10 +201,12 @@
         }
 
         .google-stat {
-            background: #1e1e1e;
+            background: rgba(30, 30, 30, 0.85);
+            backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 24px;
-            border: 1px solid #2a2a2a;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-left: 4px solid #3cc5ee;
             text-align: center;
         }
 
@@ -203,7 +218,7 @@
 
         .google-stat .g-label {
             font-size: 12px;
-            color: #888;
+            color: #cccccc;
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-top: 6px;
@@ -219,11 +234,16 @@
 
         .footer p {
             font-size: 12px;
-            color: #555;
+            color: #bbbbbb;
         }
 
-        .footer .brand-footer {
-            color: #ffc711;
+        .footer .brand-yellow {
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .footer .brand-cyan {
+            color: #3cc5ee;
             font-weight: 600;
         }
     </style>
@@ -245,6 +265,7 @@
 
         <!-- Meta Overview -->
         <div class="section-title">Meta Ads Overview</div>
+        <p class="helper-text">How Facebook and Instagram ads performed this month</p>
 
         <div class="stats-grid">
             <div class="stat-card">
@@ -259,12 +280,19 @@
             </div>
             <div class="stat-card">
                 <div class="label">Total Spend</div>
-                <div class="value">$380</div>
+                <div class="value">$250</div>
                 <div class="sub">Meta Ads Budget</div>
             </div>
+            <div class="stat-card">
+                <div class="label">Impressions</div>
+                <div class="value">89,300</div>
+                <div class="sub">Total ad views</div>
+            </div>
+        </div>
 
         <!-- Meta Ads Table -->
         <div class="section-title">Campaign Performance</div>
+        <p class="helper-text">Each ad campaign and how many people it reached, how many clicked, and how much it cost</p>
 
         <div class="table-container">
             <table>
@@ -325,6 +353,7 @@
 
         <!-- Monthly Trend Chart -->
         <div class="section-title">Monthly Trend (Oct 2025 - Mar 2026)</div>
+        <p class="helper-text">How reach and engagement grew over the last 6 months -- yellow bars show reach, blue bars show engagement</p>
 
         <div class="chart-container">
             <h3>Reach & Engagement Over Time</h3>
@@ -335,6 +364,7 @@
 
         <!-- Google Ads Section -->
         <div class="section-title">Google Ads Overview</div>
+        <p class="helper-text">Search and Display ads running on Google -- these bring people who are actively looking for cafes</p>
 
         <div class="google-grid">
             <div class="google-stat">
@@ -390,7 +420,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            <p>Report generated by <span class="brand-footer">MARTIVI DIGITAL</span></p>
+            <p>Report generated by <span class="brand-yellow">MARTIVI</span> <span class="brand-cyan">DIGITAL</span></p>
             <p>Cafe Batumi &mdash; March 2026</p>
         </div>
 
@@ -398,7 +428,7 @@
 
     <script>
         // Chart.js -- Monthly Trend Bar Chart
-        const ctx = document.getElementById('barChart').getContext('2d');
+        const ctx = document.getElementById('bar-chart').getContext('2d');
 
         const monthlyData = {
             labels: ['Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026', 'Mar 2026'],
@@ -491,6 +521,38 @@
         };
 
         new Chart(ctx, chartConfig);
+
+        // Ocean wave sound on scroll
+        var waveAudio = new Audio('https://cdn.freesound.org/previews/467/467539_4397472-lq.mp3');
+        waveAudio.loop = true;
+        waveAudio.volume = 0;
+
+        var audioStarted = false;
+        var fadeTimeout;
+
+        window.addEventListener('scroll', function() {
+            if (!audioStarted) {
+                waveAudio.play().then(function() {
+                    audioStarted = true;
+                }).catch(function() {});
+            }
+
+            // Fade in when scrolling
+            waveAudio.volume = Math.min(waveAudio.volume + 0.05, 0.3);
+
+            // Fade out when scrolling stops
+            clearTimeout(fadeTimeout);
+            fadeTimeout = setTimeout(function() {
+                var fadeOut = setInterval(function() {
+                    if (waveAudio.volume > 0.02) {
+                        waveAudio.volume = Math.max(waveAudio.volume - 0.01, 0);
+                    } else {
+                        waveAudio.volume = 0;
+                        clearInterval(fadeOut);
+                    }
+                }, 100);
+            }, 1000);
+        });
     </script>
 </body>
 </html>

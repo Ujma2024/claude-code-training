@@ -1,0 +1,1186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cafe Batumi - Social Media Report | MARTIVI DIGITAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #191919;
+            color: #ffffff;
+            font-family: 'Montserrat', sans-serif;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 2px solid #333333;
+        }
+
+        .header-left h1 {
+            font-size: clamp(1.5rem, 3vw, 2.2rem);
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .header-left .period {
+            font-size: 1rem;
+            color: #888888;
+            font-weight: 400;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .brand {
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .brand-yellow { color: #ffc711; }
+        .brand-cyan { color: #3cc5ee; }
+
+        .brand-subtitle {
+            font-size: 0.75rem;
+            color: #888888;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #ffc711;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 20px;
+            margin-top: 48px;
+        }
+
+        .section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        /* Stat Cards */
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            border-left: 4px solid #ffc711;
+            padding: 24px 20px;
+        }
+
+        .stat-card.cyan {
+            border-left-color: #3cc5ee;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: #888888;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .stat-number {
+            font-size: clamp(1.5rem, 3vw, 2rem);
+            font-weight: 700;
+            color: #ffffff;
+        }
+
+        .stat-sub {
+            font-size: 0.8rem;
+            color: #888888;
+            margin-top: 4px;
+        }
+
+        .stat-change {
+            font-size: 0.8rem;
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        .stat-change.up { color: #4ade80; }
+        .stat-change.down { color: #f87171; }
+
+        /* Tab System */
+        .tabs {
+            display: flex;
+            gap: 0;
+            margin-bottom: 0;
+        }
+
+        .tab {
+            padding: 12px 24px;
+            background-color: #1e1e1e;
+            color: #888888;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+        }
+
+        .tab:hover {
+            color: #ffffff;
+            background-color: #262626;
+        }
+
+        .tab.active {
+            background-color: #262626;
+            color: #ffc711;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Tables */
+        .table-wrapper {
+            background-color: #262626;
+            border-radius: 0 12px 12px 12px;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.85rem;
+        }
+
+        thead th {
+            background-color: #1e1e1e;
+            color: #888888;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.7rem;
+            padding: 14px 16px;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 14px 16px;
+            border-bottom: 1px solid #333333;
+            white-space: nowrap;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: rgba(255, 199, 17, 0.05);
+        }
+
+        .campaign-name {
+            color: #3cc5ee;
+            font-weight: 600;
+        }
+
+        /* Tooltip style helper text */
+        .helper-text {
+            font-size: 0.7rem;
+            color: #666666;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        /* Charts Grid */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .chart-card {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 24px;
+        }
+
+        .chart-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .chart-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 280px;
+        }
+
+        /* Breakdown Tables */
+        .breakdown-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .breakdown-card {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        .breakdown-card table {
+            font-size: 0.8rem;
+        }
+
+        .breakdown-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 16px;
+        }
+
+        /* Google Section */
+        .google-table-wrapper {
+            background-color: #1e1e1e;
+            border-radius: 12px;
+            overflow-x: auto;
+            padding: 0;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #333333;
+        }
+
+        .footer .brand {
+            font-size: 1.5rem;
+        }
+
+        .footer-sub {
+            font-size: 0.75rem;
+            color: #888888;
+            margin-top: 4px;
+        }
+
+        /* Dropdown */
+        .dropdown {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 600;
+            background-color: #262626;
+            color: #ffffff;
+            border: 2px solid #333333;
+            border-radius: 8px;
+            padding: 12px 20px;
+            margin-bottom: 16px;
+            cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' stroke-width='2' fill='none'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 44px;
+            min-width: 220px;
+        }
+
+        .dropdown:hover {
+            border-color: #ffc711;
+        }
+
+        .dropdown:focus {
+            outline: none;
+            border-color: #ffc711;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .charts-grid,
+            .breakdown-grid {
+                grid-template-columns: 1fr;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+            .header-right {
+                text-align: center;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-row {
+                grid-template-columns: 1fr;
+            }
+            .tabs {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- Header -->
+        <div class="header">
+            <div class="header-left">
+                <h1>Cafe Batumi</h1>
+                <p class="period">Social Media Report -- March 2026</p>
+            </div>
+            <div class="header-right">
+                <div class="brand">
+                    <span class="brand-yellow">MARTIVI</span> <span class="brand-cyan">DIGITAL</span>
+                </div>
+                <p class="brand-subtitle">Performance Report</p>
+            </div>
+        </div>
+
+        <!-- Overview Stat Cards -->
+        <p class="section-title">Overview</p>
+        <p class="helper-text">How many people saw the content and how they interacted with it</p>
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-label">Total Reach</div>
+                <div class="stat-number">45,200</div>
+                <div class="stat-sub">Unique people who saw the ads</div>
+                <div class="stat-change up">+10.2% vs Feb</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Engagements</div>
+                <div class="stat-number">3,400</div>
+                <div class="stat-sub">Likes, comments, shares, clicks</div>
+                <div class="stat-change up">+9.7% vs Feb</div>
+            </div>
+            <div class="stat-card cyan">
+                <div class="stat-label">Engagement Rate</div>
+                <div class="stat-number">7.5%</div>
+                <div class="stat-sub">Engagements / Reach</div>
+                <div class="stat-change up">Above 3% is good</div>
+            </div>
+            <div class="stat-card cyan">
+                <div class="stat-label">Total Spend</div>
+                <div class="stat-number">$370</div>
+                <div class="stat-sub">Meta $250 + Google $120</div>
+                <div class="stat-change up">+5.7% vs Feb</div>
+            </div>
+        </div>
+
+        <!-- Meta Ads Section -->
+        <p class="section-title">Meta Ads (Facebook + Instagram)</p>
+        <p class="helper-text">Click the tabs below to see different levels of detail</p>
+
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('campaign')">Campaign View</button>
+            <button class="tab" onclick="switchTab('adset')">Ad Set View</button>
+            <button class="tab" onclick="switchTab('ad')">Ad (Creative) View</button>
+        </div>
+
+        <div class="table-wrapper">
+            <!-- Campaign View -->
+            <div class="tab-content active" id="tab-campaign">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Campaign</th>
+                            <th>Spend</th>
+                            <th>Results</th>
+                            <th>CPA</th>
+                            <th>ROAS</th>
+                            <th>CTR</th>
+                            <th>CPC</th>
+                            <th>Frequency</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="campaign-name">Spring Menu Launch</td>
+                            <td>$65</td>
+                            <td>890 clicks</td>
+                            <td>$0.07</td>
+                            <td>4.2x</td>
+                            <td>3.1%</td>
+                            <td>$0.07</td>
+                            <td>1.9</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Weekend Brunch Special</td>
+                            <td>$55</td>
+                            <td>720 clicks</td>
+                            <td>$0.08</td>
+                            <td>3.8x</td>
+                            <td>3.2%</td>
+                            <td>$0.08</td>
+                            <td>1.9</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">New Location Announcement</td>
+                            <td>$50</td>
+                            <td>1,100 clicks</td>
+                            <td>$0.05</td>
+                            <td>5.1x</td>
+                            <td>5.6%</td>
+                            <td>$0.05</td>
+                            <td>2.0</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Coffee Loyalty Program</td>
+                            <td>$45</td>
+                            <td>480 clicks</td>
+                            <td>$0.09</td>
+                            <td>3.2x</td>
+                            <td>4.3%</td>
+                            <td>$0.09</td>
+                            <td>2.1</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">IG Story - Barista Tips</td>
+                            <td>$35</td>
+                            <td>210 clicks</td>
+                            <td>$0.17</td>
+                            <td>2.1x</td>
+                            <td>2.8%</td>
+                            <td>$0.17</td>
+                            <td>2.6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Ad Set View -->
+            <div class="tab-content" id="tab-adset">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ad Set</th>
+                            <th>Audience</th>
+                            <th>Spend</th>
+                            <th>Results</th>
+                            <th>CPA</th>
+                            <th>CTR</th>
+                            <th>CPC</th>
+                            <th>Frequency</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="campaign-name">Spring Menu - Foodies 25-44</td>
+                            <td>Food lovers, 25-44, Tbilisi</td>
+                            <td>$40</td>
+                            <td>580 clicks</td>
+                            <td>$0.07</td>
+                            <td>3.4%</td>
+                            <td>$0.07</td>
+                            <td>1.8</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Spring Menu - Broad 18-65</td>
+                            <td>Broad, 18-65, 5km radius</td>
+                            <td>$25</td>
+                            <td>310 clicks</td>
+                            <td>$0.08</td>
+                            <td>2.7%</td>
+                            <td>$0.08</td>
+                            <td>2.0</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Brunch - Weekend Diners</td>
+                            <td>Restaurants, Dining out, 25-54</td>
+                            <td>$35</td>
+                            <td>490 clicks</td>
+                            <td>$0.07</td>
+                            <td>3.5%</td>
+                            <td>$0.07</td>
+                            <td>1.7</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Brunch - Lookalike 1%</td>
+                            <td>Lookalike: past visitors, 1%</td>
+                            <td>$20</td>
+                            <td>230 clicks</td>
+                            <td>$0.09</td>
+                            <td>2.8%</td>
+                            <td>$0.09</td>
+                            <td>2.1</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">New Location - Local Area</td>
+                            <td>3km radius, all ages</td>
+                            <td>$30</td>
+                            <td>720 clicks</td>
+                            <td>$0.04</td>
+                            <td>6.1%</td>
+                            <td>$0.04</td>
+                            <td>1.9</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">New Location - Retarget</td>
+                            <td>Website visitors, 30 days</td>
+                            <td>$20</td>
+                            <td>380 clicks</td>
+                            <td>$0.05</td>
+                            <td>5.0%</td>
+                            <td>$0.05</td>
+                            <td>2.2</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Loyalty - Coffee Lovers</td>
+                            <td>Coffee interests, 22-45</td>
+                            <td>$45</td>
+                            <td>480 clicks</td>
+                            <td>$0.09</td>
+                            <td>4.3%</td>
+                            <td>$0.09</td>
+                            <td>2.1</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Barista Tips - IG Story</td>
+                            <td>IG followers + interests</td>
+                            <td>$35</td>
+                            <td>210 clicks</td>
+                            <td>$0.17</td>
+                            <td>2.8%</td>
+                            <td>$0.17</td>
+                            <td>2.6</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Ad (Creative) View -->
+            <div class="tab-content" id="tab-ad">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ad Name</th>
+                            <th>Spend</th>
+                            <th>Results</th>
+                            <th>CPA</th>
+                            <th>CTR</th>
+                            <th>Hook Rate</th>
+                            <th>CPC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="campaign-name">Spring Menu - Carousel (4 dishes)</td>
+                            <td>$30</td>
+                            <td>420 clicks</td>
+                            <td>$0.07</td>
+                            <td>3.6%</td>
+                            <td>--</td>
+                            <td>$0.07</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Spring Menu - Video (Chef cooking)</td>
+                            <td>$35</td>
+                            <td>470 clicks</td>
+                            <td>$0.07</td>
+                            <td>2.8%</td>
+                            <td>38%</td>
+                            <td>$0.07</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Brunch - Single Image (Table setup)</td>
+                            <td>$30</td>
+                            <td>380 clicks</td>
+                            <td>$0.08</td>
+                            <td>3.0%</td>
+                            <td>--</td>
+                            <td>$0.08</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Brunch - Reel (Time-lapse prep)</td>
+                            <td>$25</td>
+                            <td>340 clicks</td>
+                            <td>$0.07</td>
+                            <td>3.4%</td>
+                            <td>42%</td>
+                            <td>$0.07</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">New Location - Video (Walking tour)</td>
+                            <td>$30</td>
+                            <td>680 clicks</td>
+                            <td>$0.04</td>
+                            <td>5.9%</td>
+                            <td>45%</td>
+                            <td>$0.04</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">New Location - Static (Map + hours)</td>
+                            <td>$20</td>
+                            <td>420 clicks</td>
+                            <td>$0.05</td>
+                            <td>5.2%</td>
+                            <td>--</td>
+                            <td>$0.05</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Loyalty - Carousel (Benefits)</td>
+                            <td>$45</td>
+                            <td>480 clicks</td>
+                            <td>$0.09</td>
+                            <td>4.3%</td>
+                            <td>--</td>
+                            <td>$0.09</td>
+                        </tr>
+                        <tr>
+                            <td class="campaign-name">Barista Tips - Story (3 slides)</td>
+                            <td>$35</td>
+                            <td>210 clicks</td>
+                            <td>$0.17</td>
+                            <td>2.8%</td>
+                            <td>31%</td>
+                            <td>$0.17</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Breakdowns -->
+        <p class="section-title">Breakdowns</p>
+        <p class="helper-text">Where the ads appeared, who saw them, and when they performed best</p>
+
+        <select class="dropdown" onchange="switchBreakdown(this.value)">
+            <option value="breakdown-placement">By Placement</option>
+            <option value="breakdown-age">By Age + Gender</option>
+            <option value="breakdown-day">By Day of Week</option>
+        </select>
+
+        <div class="breakdown-grid">
+            <div class="breakdown-card breakdown-panel active" id="breakdown-placement">
+                <div class="breakdown-title">By Placement</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Placement</th>
+                            <th>Spend</th>
+                            <th>Results</th>
+                            <th>CTR</th>
+                            <th>CPC</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Facebook Feed</td>
+                            <td>$95</td>
+                            <td>1,280</td>
+                            <td>3.8%</td>
+                            <td>$0.07</td>
+                        </tr>
+                        <tr>
+                            <td>Instagram Feed</td>
+                            <td>$72</td>
+                            <td>980</td>
+                            <td>4.1%</td>
+                            <td>$0.07</td>
+                        </tr>
+                        <tr>
+                            <td>Instagram Stories</td>
+                            <td>$43</td>
+                            <td>620</td>
+                            <td>3.2%</td>
+                            <td>$0.07</td>
+                        </tr>
+                        <tr>
+                            <td>Instagram Reels</td>
+                            <td>$25</td>
+                            <td>390</td>
+                            <td>5.2%</td>
+                            <td>$0.06</td>
+                        </tr>
+                        <tr>
+                            <td>Audience Network</td>
+                            <td>$15</td>
+                            <td>130</td>
+                            <td>1.4%</td>
+                            <td>$0.12</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="breakdown-card breakdown-panel" id="breakdown-age" style="display:none;">
+                <div class="breakdown-title">By Age + Gender</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Segment</th>
+                            <th>Spend</th>
+                            <th>Results</th>
+                            <th>CTR</th>
+                            <th>CPA</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Women 25-34</td>
+                            <td>$68</td>
+                            <td>1,020</td>
+                            <td>4.8%</td>
+                            <td>$0.07</td>
+                        </tr>
+                        <tr>
+                            <td>Men 25-34</td>
+                            <td>$52</td>
+                            <td>680</td>
+                            <td>3.6%</td>
+                            <td>$0.08</td>
+                        </tr>
+                        <tr>
+                            <td>Women 35-44</td>
+                            <td>$48</td>
+                            <td>610</td>
+                            <td>4.2%</td>
+                            <td>$0.08</td>
+                        </tr>
+                        <tr>
+                            <td>Men 35-44</td>
+                            <td>$38</td>
+                            <td>420</td>
+                            <td>3.1%</td>
+                            <td>$0.09</td>
+                        </tr>
+                        <tr>
+                            <td>18-24 (all)</td>
+                            <td>$28</td>
+                            <td>410</td>
+                            <td>3.9%</td>
+                            <td>$0.07</td>
+                        </tr>
+                        <tr>
+                            <td>45+ (all)</td>
+                            <td>$16</td>
+                            <td>260</td>
+                            <td>2.4%</td>
+                            <td>$0.06</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="breakdown-card breakdown-panel" id="breakdown-day" style="display:none;">
+                <div class="breakdown-title">By Day of Week</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Day</th>
+                            <th>Spend</th>
+                            <th>Results</th>
+                            <th>CTR</th>
+                            <th>CPC</th>
+                            <th>Best Performing</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Monday</td>
+                            <td>$32</td>
+                            <td>410</td>
+                            <td>3.4%</td>
+                            <td>$0.08</td>
+                            <td>Coffee Loyalty Program</td>
+                        </tr>
+                        <tr>
+                            <td>Tuesday</td>
+                            <td>$30</td>
+                            <td>380</td>
+                            <td>3.2%</td>
+                            <td>$0.08</td>
+                            <td>Spring Menu Launch</td>
+                        </tr>
+                        <tr>
+                            <td>Wednesday</td>
+                            <td>$34</td>
+                            <td>440</td>
+                            <td>3.6%</td>
+                            <td>$0.08</td>
+                            <td>New Location Announcement</td>
+                        </tr>
+                        <tr>
+                            <td>Thursday</td>
+                            <td>$36</td>
+                            <td>490</td>
+                            <td>3.9%</td>
+                            <td>$0.07</td>
+                            <td>New Location Announcement</td>
+                        </tr>
+                        <tr>
+                            <td>Friday</td>
+                            <td>$42</td>
+                            <td>580</td>
+                            <td>4.5%</td>
+                            <td>$0.07</td>
+                            <td>Weekend Brunch Special</td>
+                        </tr>
+                        <tr>
+                            <td>Saturday</td>
+                            <td>$44</td>
+                            <td>600</td>
+                            <td>4.8%</td>
+                            <td>$0.07</td>
+                            <td>Weekend Brunch Special</td>
+                        </tr>
+                        <tr>
+                            <td>Sunday</td>
+                            <td>$32</td>
+                            <td>500</td>
+                            <td>4.1%</td>
+                            <td>$0.06</td>
+                            <td>Spring Menu Launch</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Charts -->
+        <p class="section-title">Performance Charts</p>
+        <p class="helper-text">Visual trends showing how the campaigns performed over 6 months</p>
+
+        <select class="dropdown" onchange="switchChart(this.value)">
+            <option value="chart-results">Results + CPA</option>
+            <option value="chart-spend">Spend + ROAS</option>
+            <option value="chart-ctr">CTR + CPC</option>
+        </select>
+
+        <div class="charts-grid">
+            <div class="chart-card full-width chart-panel active" id="chart-results">
+                <div class="chart-title">Results + CPA (6 Month Trend)</div>
+                <div class="chart-container">
+                    <canvas id="chartResultsCPA"></canvas>
+                </div>
+            </div>
+            <div class="chart-card full-width chart-panel" id="chart-spend" style="display:none;">
+                <div class="chart-title">Spend + ROAS (6 Month Trend)</div>
+                <div class="chart-container">
+                    <canvas id="chartSpendROAS"></canvas>
+                </div>
+            </div>
+            <div class="chart-card full-width chart-panel" id="chart-ctr" style="display:none;">
+                <div class="chart-title">CTR + CPC (6 Month Trend)</div>
+                <div class="chart-container">
+                    <canvas id="chartCTRCPC"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Google Ads Section -->
+        <p class="section-title">Google Ads</p>
+        <p class="helper-text">Search and Display campaigns driving traffic from Google</p>
+
+        <div class="stats-row" style="margin-bottom: 20px;">
+            <div class="stat-card cyan">
+                <div class="stat-label">Impressions</div>
+                <div class="stat-number">32,100</div>
+            </div>
+            <div class="stat-card cyan">
+                <div class="stat-label">Clicks</div>
+                <div class="stat-number">2,800</div>
+            </div>
+            <div class="stat-card cyan">
+                <div class="stat-label">CTR</div>
+                <div class="stat-number">8.7%</div>
+            </div>
+            <div class="stat-card cyan">
+                <div class="stat-label">Spend</div>
+                <div class="stat-number">$120</div>
+            </div>
+        </div>
+
+        <div class="google-table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Campaign</th>
+                        <th>Type</th>
+                        <th>Impressions</th>
+                        <th>Clicks</th>
+                        <th>CTR</th>
+                        <th>CPC</th>
+                        <th>Spend</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="campaign-name">Coffee Near Me</td>
+                        <td>Search</td>
+                        <td>18,500</td>
+                        <td>1,850</td>
+                        <td>10.0%</td>
+                        <td>$0.04</td>
+                        <td>$65</td>
+                    </tr>
+                    <tr>
+                        <td class="campaign-name">New Location</td>
+                        <td>Display</td>
+                        <td>9,200</td>
+                        <td>640</td>
+                        <td>7.0%</td>
+                        <td>$0.05</td>
+                        <td>$35</td>
+                    </tr>
+                    <tr>
+                        <td class="campaign-name">Best Brunch</td>
+                        <td>Search</td>
+                        <td>4,400</td>
+                        <td>310</td>
+                        <td>7.0%</td>
+                        <td>$0.06</td>
+                        <td>$20</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <div class="brand">
+                <span class="brand-yellow">MARTIVI</span> <span class="brand-cyan">DIGITAL</span>
+            </div>
+            <p class="footer-sub">Report generated March 2026</p>
+        </div>
+    </div>
+
+    <script>
+        // Breakdown dropdown
+        function switchBreakdown(id) {
+            document.querySelectorAll('.breakdown-panel').forEach(function(el) {
+                el.style.display = 'none';
+            });
+            document.getElementById(id).style.display = 'block';
+        }
+
+        // Chart dropdown
+        function switchChart(id) {
+            document.querySelectorAll('.chart-panel').forEach(function(el) {
+                el.style.display = 'none';
+            });
+            document.getElementById(id).style.display = 'block';
+        }
+
+        // Tab switching
+        function switchTab(tabName) {
+            var tabs = document.querySelectorAll('.tab');
+            var contents = document.querySelectorAll('.tab-content');
+
+            tabs.forEach(function(tab) { tab.classList.remove('active'); });
+            contents.forEach(function(content) { content.classList.remove('active'); });
+
+            event.target.classList.add('active');
+            document.getElementById('tab-' + tabName).classList.add('active');
+        }
+
+        // Chart.js defaults for dark theme
+        Chart.defaults.color = '#888888';
+        Chart.defaults.borderColor = '#333333';
+
+        // Monthly data
+        var months = ['Oct 2025', 'Nov 2025', 'Dec 2025', 'Jan 2026', 'Feb 2026', 'Mar 2026'];
+        var reach = [28000, 31000, 35000, 38000, 41000, 45200];
+        var engagements = [1800, 2100, 2600, 2900, 3100, 3400];
+        var spend = [180, 200, 220, 230, 240, 250];
+
+        // Mock extended data for charts
+        var results = [1200, 1500, 1900, 2300, 2700, 3400];
+        var cpa = [0.15, 0.13, 0.12, 0.10, 0.09, 0.07];
+        var roas = [2.4, 2.8, 3.1, 3.4, 3.7, 4.0];
+        var ctr = [2.1, 2.5, 2.9, 3.2, 3.5, 3.8];
+        var cpc = [0.14, 0.12, 0.11, 0.09, 0.08, 0.07];
+
+        // Chart 1: Results + CPA
+        new Chart(document.getElementById('chartResultsCPA'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Results (clicks)',
+                        data: results,
+                        backgroundColor: 'rgba(74, 222, 128, 0.7)',
+                        borderColor: '#4ade80',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'CPA ($)',
+                        data: cpa,
+                        type: 'line',
+                        borderColor: '#3cc5ee',
+                        backgroundColor: 'rgba(60, 197, 238, 0.1)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#3cc5ee',
+                        fill: true,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: {
+                        position: 'left',
+                        title: { display: true, text: 'Results' },
+                        grid: { color: '#2a2a2a' }
+                    },
+                    y1: {
+                        position: 'right',
+                        title: { display: true, text: 'CPA ($)' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: Spend + ROAS
+        new Chart(document.getElementById('chartSpendROAS'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'Spend ($)',
+                        data: spend,
+                        backgroundColor: 'rgba(74, 222, 128, 0.7)',
+                        borderColor: '#4ade80',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'ROAS (x)',
+                        data: roas,
+                        type: 'line',
+                        borderColor: '#3cc5ee',
+                        backgroundColor: 'rgba(60, 197, 238, 0.1)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#3cc5ee',
+                        fill: true,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: {
+                        position: 'left',
+                        title: { display: true, text: 'Spend ($)' },
+                        grid: { color: '#2a2a2a' }
+                    },
+                    y1: {
+                        position: 'right',
+                        title: { display: true, text: 'ROAS' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+
+        // Chart 3: CTR + CPC
+        new Chart(document.getElementById('chartCTRCPC'), {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [
+                    {
+                        label: 'CTR (%)',
+                        data: ctr,
+                        backgroundColor: 'rgba(74, 222, 128, 0.7)',
+                        borderColor: '#4ade80',
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        yAxisID: 'y'
+                    },
+                    {
+                        label: 'CPC ($)',
+                        data: cpc,
+                        type: 'line',
+                        borderColor: '#3cc5ee',
+                        backgroundColor: 'rgba(60, 197, 238, 0.1)',
+                        borderWidth: 2,
+                        pointRadius: 4,
+                        pointBackgroundColor: '#3cc5ee',
+                        fill: true,
+                        yAxisID: 'y1'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' }
+                },
+                scales: {
+                    y: {
+                        position: 'left',
+                        title: { display: true, text: 'CTR (%)' },
+                        grid: { color: '#2a2a2a' }
+                    },
+                    y1: {
+                        position: 'right',
+                        title: { display: true, text: 'CPC ($)' },
+                        grid: { display: false }
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>

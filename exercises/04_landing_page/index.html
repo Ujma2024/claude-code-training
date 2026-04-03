@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ThermoSmart Pro - The Climate Change Is Under Your Control</title>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: none;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Custom Sunlight Cursor */
+        .cursor-sun {
+            position: fixed;
+            width: 32px;
+            height: 32px;
+            pointer-events: none;
+            z-index: 10000;
+            transform: translate(-50%, -50%);
+            transition: opacity 0.2s;
+        }
+
+        .cursor-sun::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 12px;
+            height: 12px;
+            background: #ffc711;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            box-shadow: 0 0 15px 5px rgba(255, 199, 17, 0.4);
+        }
+
+        .cursor-sun::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 28px;
+            height: 28px;
+            border: 2px solid rgba(255, 199, 17, 0.5);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            animation: cursor-pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes cursor-pulse {
+            0%, 100% { transform: translate(-50%, -50%) scale(1); opacity: 0.5; }
+            50% { transform: translate(-50%, -50%) scale(1.3); opacity: 0.2; }
+        }
+
+        /* Sunlight glow that follows cursor */
+        .cursor-glow {
+            position: fixed;
+            width: 200px;
+            height: 200px;
+            pointer-events: none;
+            z-index: 9998;
+            transform: translate(-50%, -50%);
+            background: radial-gradient(circle, rgba(255, 199, 17, 0.08) 0%, transparent 70%);
+        }
+
+        /* Loading Screen */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #111111;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .thermostat-loader {
+            position: relative;
+            width: 200px;
+            height: 200px;
+        }
+
+        .knob-ring {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 200px;
+            height: 200px;
+        }
+
+        .knob-ring circle {
+            fill: none;
+            stroke-width: 8;
+            stroke-linecap: round;
+        }
+
+        .knob-bg {
+            stroke: #2a2a2a;
+        }
+
+        .knob-progress {
+            stroke: url(#tempGradient);
+            stroke-dasharray: 565;
+            stroke-dashoffset: 565;
+            transform: rotate(-90deg);
+            transform-origin: center;
+            transition: stroke-dashoffset 0.05s linear;
+        }
+
+        .knob-center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+        }
+
+        .knob-temp {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            color: #ffffff;
+        }
+
+        .knob-unit {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            color: #888888;
+        }
+
+        .loader-brand {
+            margin-top: 32px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            color: #888888;
+            text-transform: uppercase;
+        }
+
+        /* Dynamic Background */
+        .page-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            transition: background 0.3s ease;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 100;
+            padding: 0 40px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: rgba(17, 17, 17, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .nav.visible {
+            opacity: 1;
+        }
+
+        .nav-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: #ffffff;
+        }
+
+        .nav-brand span {
+            color: #ffc711;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #888888;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.2s;
+            cursor: none;
+        }
+
+        .nav-links a:hover {
+            color: #ffc711;
+        }
+
+        .nav-links a.active {
+            color: #ffc711;
+        }
+
+        /* Sections */
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 40px;
+            position: relative;
+        }
+
+        .section-inner {
+            max-width: 1100px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Hero */
+        .hero {
+            text-align: center;
+            padding-top: 64px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ffc711;
+            border: 1px solid rgba(255, 199, 17, 0.3);
+            padding: 8px 20px;
+            border-radius: 50px;
+            margin-bottom: 32px;
+        }
+
+        .hero h1 {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 800;
+            line-height: 1.05;
+            margin-bottom: 24px;
+            letter-spacing: -2px;
+        }
+
+        .hero h1 .highlight {
+            background: linear-gradient(135deg, #ffc711, #ff8c00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: rgba(255, 255, 255, 0.6);
+            max-width: 600px;
+            margin: 0 auto 48px;
+            line-height: 1.7;
+        }
+
+        .btn-primary {
+            display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #111111;
+            background: linear-gradient(135deg, #ffc711, #ff8c00);
+            padding: 18px 48px;
+            border-radius: 50px;
+            border: none;
+            text-decoration: none;
+            cursor: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 30px rgba(255, 199, 17, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 40px rgba(255, 199, 17, 0.5);
+        }
+
+        .hero-temp-indicator {
+            margin-top: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px;
+            opacity: 0.4;
+        }
+
+        .temp-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #ffc711;
+        }
+
+        .temp-line {
+            width: 120px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ffc711, transparent);
+        }
+
+        .hero-scroll-hint {
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+        }
+
+        /* Features */
+        .section-label {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            color: #ffc711;
+            margin-bottom: 16px;
+        }
+
+        .section-heading {
+            font-size: clamp(2rem, 4vw, 3rem);
+            font-weight: 800;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+
+        .section-desc {
+            font-size: 1rem;
+            color: rgba(255, 255, 255, 0.5);
+            max-width: 550px;
+            line-height: 1.7;
+            margin-bottom: 60px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 36px;
+            transition: transform 0.3s, background 0.3s, border-color 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            background: rgba(255, 255, 255, 0.07);
+            border-color: rgba(255, 199, 17, 0.2);
+        }
+
+        .feature-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, rgba(255, 199, 17, 0.15), rgba(255, 140, 0, 0.1));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .feature-card p {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.5);
+            line-height: 1.7;
+        }
+
+        /* Pricing */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            align-items: center;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 20px;
+            padding: 40px 32px;
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .pricing-card.featured {
+            background: rgba(255, 199, 17, 0.08);
+            border: 2px solid rgba(255, 199, 17, 0.3);
+            padding: 56px 32px;
+            position: relative;
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #ffc711, #ff8c00);
+            color: #111111;
+            padding: 6px 20px;
+            border-radius: 50px;
+        }
+
+        .pricing-tier {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #888888;
+            margin-bottom: 16px;
+        }
+
+        .pricing-price {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+        }
+
+        .pricing-price span {
+            font-size: 1.2rem;
+            color: #888888;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 32px;
+        }
+
+        .pricing-features li {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .pricing-features li::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ffc711;
+            transform: translateY(-50%);
+        }
+
+        .btn-secondary {
+            display: inline-block;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+            background: transparent;
+            padding: 14px 36px;
+            border-radius: 50px;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            text-decoration: none;
+            cursor: none;
+            transition: all 0.2s;
+        }
+
+        .btn-secondary:hover {
+            border-color: #ffc711;
+            color: #ffc711;
+        }
+
+        .pricing-card.featured .btn-secondary {
+            background: linear-gradient(135deg, #ffc711, #ff8c00);
+            color: #111111;
+            border: none;
+        }
+
+        /* Testimonials */
+        .testimonials-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        .testimonial-card {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 16px;
+            padding: 36px;
+            position: relative;
+        }
+
+        .testimonial-quote-mark {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            color: rgba(255, 199, 17, 0.15);
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .testimonial-text {
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 24px;
+            font-style: italic;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .testimonial-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffc711, #ff8c00);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #111111;
+        }
+
+        .testimonial-name {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .testimonial-role {
+            font-size: 0.75rem;
+            color: #888888;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+        }
+
+        .cta-section .section-heading {
+            font-size: clamp(2rem, 4vw, 3.5rem);
+        }
+
+        .cta-section .section-desc {
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 40px;
+        }
+
+        .cta-email {
+            margin-top: 24px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .cta-email a {
+            color: #ffc711;
+            text-decoration: none;
+            cursor: none;
+        }
+
+        .cta-email a:hover {
+            text-decoration: underline;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .footer-brand .yellow { color: #ffc711; }
+        .footer-brand .cyan { color: #3cc5ee; }
+
+        .footer-note {
+            font-size: 0.7rem;
+            color: #555555;
+            max-width: 500px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+
+        /* Scroll fade-in animation */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Temperature indicator bar */
+        .temp-bar {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 4px;
+            height: 120px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 4px;
+            z-index: 100;
+        }
+
+        .temp-bar-fill {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            border-radius: 4px;
+            transition: height 0.3s, background 0.3s;
+        }
+
+        .temp-bar-label {
+            position: absolute;
+            right: 14px;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.4);
+            white-space: nowrap;
+            transition: color 0.3s;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .features-grid,
+            .pricing-grid,
+            .testimonials-grid {
+                grid-template-columns: 1fr;
+            }
+            .pricing-card.featured {
+                order: -1;
+            }
+            section { padding: 80px 20px; }
+            .temp-bar { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-sun" id="cursor"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- Loading Screen -->
+    <div class="loader" id="loader">
+        <div class="thermostat-loader">
+            <svg class="knob-ring" viewBox="0 0 200 200">
+                <defs>
+                    <linearGradient id="tempGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" style="stop-color:#3cc5ee" />
+                        <stop offset="50%" style="stop-color:#ffc711" />
+                        <stop offset="100%" style="stop-color:#ff8c00" />
+                    </linearGradient>
+                </defs>
+                <circle class="knob-bg" cx="100" cy="100" r="90" />
+                <circle class="knob-progress" id="knobProgress" cx="100" cy="100" r="90" />
+            </svg>
+            <div class="knob-center">
+                <div class="knob-temp" id="knobTemp">0</div>
+                <div class="knob-unit">loading</div>
+            </div>
+        </div>
+        <div class="loader-brand">ThermoSmart Pro</div>
+    </div>
+
+    <!-- Dynamic Background -->
+    <div class="page-bg" id="pageBg"></div>
+
+    <!-- Temperature Bar -->
+    <div class="temp-bar">
+        <div class="temp-bar-fill" id="tempBarFill"></div>
+        <div class="temp-bar-label" id="tempBarLabel" style="bottom: -20px;"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav-brand">Thermo<span>Smart</span> Pro</div>
+        <ul class="nav-links">
+            <li><a href="#hero" class="active">Home</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="#testimonials">Voices</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="hero" class="hero">
+        <div class="section-inner">
+            <div class="hero-badge">Next-Gen Climate Control</div>
+            <h1>
+                <span class="highlight">ThermoSmart</span><br>Pro
+            </h1>
+            <p class="hero-subtitle">The climate change is under your control.</p>
+            <a href="#pricing" class="btn-primary">Order Now</a>
+            <div class="hero-temp-indicator">
+                <div class="temp-dot"></div>
+                <div class="temp-line"></div>
+                <div class="hero-scroll-hint">Scroll to explore</div>
+                <div class="temp-line"></div>
+                <div class="temp-dot"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <div class="section-inner">
+            <div class="section-label fade-in">What It Does</div>
+            <h2 class="section-heading fade-in">Intelligence Built Into Every Degree</h2>
+            <p class="section-desc fade-in">Four powerful features working together to keep your home perfectly comfortable while saving energy.</p>
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">&#x1f9e0;</div>
+                    <h3>Adaptive Learning</h3>
+                    <p>Studies your daily routine for the first week, then automatically adjusts temperatures based on when you wake up, leave home, and go to sleep. No manual scheduling needed.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">&#x26c5;</div>
+                    <h3>Weather-Aware</h3>
+                    <p>Connects to local weather data and pre-adjusts your heating or cooling before temperature swings hit. If a cold front is coming tonight, your home is already warming up.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">&#x1f3e0;</div>
+                    <h3>Room-by-Room Control</h3>
+                    <p>Pair with ThermoSmart sensors to control each room independently. No more heating the guest room nobody uses or freezing in your home office.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <div class="feature-icon">&#x1f4ca;</div>
+                    <h3>Energy Dashboard</h3>
+                    <p>Track your energy usage in real time through the ThermoSmart app. See daily, weekly, and monthly reports with clear breakdowns of where your energy goes.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section id="pricing">
+        <div class="section-inner">
+            <div class="section-label fade-in">Pricing</div>
+            <h2 class="section-heading fade-in">Choose Your Comfort Level</h2>
+            <p class="section-desc fade-in">Every plan includes free software updates and our 30-day satisfaction guarantee.</p>
+            <div class="pricing-grid">
+                <div class="pricing-card fade-in">
+                    <div class="pricing-tier">Basic</div>
+                    <div class="pricing-price"><span>$</span>99</div>
+                    <ul class="pricing-features">
+                        <li>Single thermostat</li>
+                        <li>Adaptive learning</li>
+                        <li>Weather-aware adjustments</li>
+                        <li>Mobile app control</li>
+                        <li>1-year warranty</li>
+                    </ul>
+                    <a href="#contact" class="btn-secondary">Get Basic</a>
+                </div>
+                <div class="pricing-card featured fade-in">
+                    <div class="pricing-badge">Most Popular</div>
+                    <div class="pricing-tier">Pro</div>
+                    <div class="pricing-price"><span>$</span>199</div>
+                    <ul class="pricing-features">
+                        <li>Everything in Basic</li>
+                        <li>2 room sensors included</li>
+                        <li>Room-by-room control</li>
+                        <li>Energy dashboard with reports</li>
+                        <li>Priority support</li>
+                        <li>3-year warranty</li>
+                    </ul>
+                    <a href="#contact" class="btn-secondary">Get Pro</a>
+                </div>
+                <div class="pricing-card fade-in">
+                    <div class="pricing-tier">Enterprise</div>
+                    <div class="pricing-price"><span>$</span>399</div>
+                    <ul class="pricing-features">
+                        <li>Everything in Pro</li>
+                        <li>6 room sensors included</li>
+                        <li>Multi-zone management</li>
+                        <li>API access for smart home</li>
+                        <li>Dedicated account manager</li>
+                        <li>5-year warranty</li>
+                        <li>Free installation</li>
+                    </ul>
+                    <a href="#contact" class="btn-secondary">Get Enterprise</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials">
+        <div class="section-inner">
+            <div class="section-label fade-in">What People Say</div>
+            <h2 class="section-heading fade-in">Warm Words From Cool Homes</h2>
+            <p class="section-desc fade-in">Real feedback from ThermoSmart Pro users.</p>
+            <div class="testimonials-grid">
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-quote-mark">"</div>
+                    <p class="testimonial-text">I'm loving the total control of the climate at home.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">AM</div>
+                        <div>
+                            <div class="testimonial-name">Ana M.</div>
+                            <div class="testimonial-role">Homeowner, Tbilisi</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-quote-mark">"</div>
+                    <p class="testimonial-text">The energy efficiency this simple device brought to my home was obvious from the first bill on.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">DK</div>
+                        <div>
+                            <div class="testimonial-name">David K.</div>
+                            <div class="testimonial-role">Property Manager, Batumi</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card fade-in">
+                    <div class="testimonial-quote-mark">"</div>
+                    <p class="testimonial-text">Even the voice of ThermoSmart Pro is warm.</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">MS</div>
+                        <div>
+                            <div class="testimonial-name">Marta S.</div>
+                            <div class="testimonial-role">Parent of 3, Kutaisi</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact / CTA Section -->
+    <section id="contact" class="cta-section">
+        <div class="section-inner">
+            <div class="section-label fade-in">Get Started</div>
+            <h2 class="section-heading fade-in">Ready to Make Your Home Smarter?</h2>
+            <p class="section-desc fade-in">Join 15,000+ households already saving energy with ThermoSmart Pro. Free shipping on all orders this month.</p>
+            <a href="#" class="btn-primary fade-in">Order Now</a>
+            <p class="cta-email fade-in">Have questions? Contact our team at <a href="mailto:hello@thermosmart.example.com">hello@thermosmart.example.com</a></p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-brand">
+            <span class="yellow">MARTIVI</span> <span class="cyan">DIGITAL</span>
+        </div>
+        <p class="footer-note">ThermoSmart is a fictional product created for training purposes. This page was built with MARTIVI DIGITAL tools.</p>
+    </div>
+
+    <script>
+        // ---- CUSTOM CURSOR ----
+        var cursor = document.getElementById('cursor');
+        var cursorGlow = document.getElementById('cursorGlow');
+
+        document.addEventListener('mousemove', function(e) {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+            cursorGlow.style.left = e.clientX + 'px';
+            cursorGlow.style.top = e.clientY + 'px';
+        });
+
+        // ---- LOADING ANIMATION ----
+        var knobProgress = document.getElementById('knobProgress');
+        var knobTemp = document.getElementById('knobTemp');
+        var loader = document.getElementById('loader');
+        var totalLength = 2 * Math.PI * 90; // ~565
+
+        var loadValue = 0;
+        var loadInterval = setInterval(function() {
+            loadValue += 1;
+            knobTemp.textContent = loadValue;
+
+            var offset = totalLength - (loadValue / 100) * totalLength;
+            knobProgress.style.strokeDashoffset = offset;
+
+            if (loadValue >= 100) {
+                clearInterval(loadInterval);
+                setTimeout(function() {
+                    loader.classList.add('hidden');
+                    document.getElementById('nav').classList.add('visible');
+                }, 400);
+            }
+        }, 25);
+
+        // ---- DYNAMIC DAY/TEMPERATURE BACKGROUND ----
+        var pageBg = document.getElementById('pageBg');
+        var tempBarFill = document.getElementById('tempBarFill');
+        var tempBarLabel = document.getElementById('tempBarLabel');
+
+        // Color stops for scroll position: dawn -> morning -> noon -> sunset -> night
+        var skyStops = [
+            { pos: 0,    bg: 'linear-gradient(180deg, #0a0a2e 0%, #1a1a3e 50%, #111111 100%)',        temp: 16, label: 'Dawn' },
+            { pos: 0.2,  bg: 'linear-gradient(180deg, #1a0a2e 0%, #4a2040 30%, #cc6030 70%, #191919 100%)', temp: 18, label: 'Sunrise' },
+            { pos: 0.4,  bg: 'linear-gradient(180deg, #1a3050 0%, #2a6090 30%, #60a0c0 60%, #191919 100%)', temp: 22, label: 'Morning' },
+            { pos: 0.6,  bg: 'linear-gradient(180deg, #0a2a4a 0%, #104070 40%, #191919 100%)',        temp: 26, label: 'Afternoon' },
+            { pos: 0.8,  bg: 'linear-gradient(180deg, #1a0a20 0%, #6a2040 30%, #cc5020 50%, #191919 100%)', temp: 23, label: 'Sunset' },
+            { pos: 1,    bg: 'linear-gradient(180deg, #050510 0%, #0a0a1a 40%, #111111 100%)',        temp: 15, label: 'Night' }
+        ];
+
+        function updateBackground() {
+            var scrollTop = window.scrollY;
+            var docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            var progress = docHeight > 0 ? scrollTop / docHeight : 0;
+
+            // Find which two stops we're between
+            var i = 0;
+            for (var s = 0; s < skyStops.length - 1; s++) {
+                if (progress >= skyStops[s].pos && progress <= skyStops[s + 1].pos) {
+                    i = s;
+                    break;
+                }
+            }
+            if (progress >= skyStops[skyStops.length - 1].pos) {
+                i = skyStops.length - 2;
+            }
+
+            var local = (progress - skyStops[i].pos) / (skyStops[i + 1].pos - skyStops[i].pos);
+            local = Math.max(0, Math.min(1, local));
+
+            // Use the closer stop's gradient
+            pageBg.style.background = local < 0.5 ? skyStops[i].bg : skyStops[i + 1].bg;
+
+            // Temperature interpolation
+            var temp = Math.round(skyStops[i].temp + (skyStops[i + 1].temp - skyStops[i].temp) * local);
+            var label = local < 0.5 ? skyStops[i].label : skyStops[i + 1].label;
+
+            // Update temp bar
+            var fillPercent = ((temp - 10) / 20) * 100;
+            tempBarFill.style.height = fillPercent + '%';
+
+            var warmth = (temp - 15) / 11;
+            if (warmth < 0) warmth = 0;
+            if (warmth > 1) warmth = 1;
+
+            var r = Math.round(60 + warmth * 195);
+            var g = Math.round(197 - warmth * 100);
+            var b = Math.round(238 - warmth * 200);
+            tempBarFill.style.background = 'rgb(' + r + ',' + g + ',' + b + ')';
+            tempBarLabel.textContent = temp + ' -- ' + label;
+            tempBarLabel.style.bottom = fillPercent + '%';
+
+            // Active nav link
+            var sections = ['hero', 'features', 'pricing', 'testimonials', 'contact'];
+            var navLinks = document.querySelectorAll('.nav-links a');
+            for (var n = sections.length - 1; n >= 0; n--) {
+                var el = document.getElementById(sections[n]);
+                if (el && scrollTop >= el.offsetTop - 200) {
+                    navLinks.forEach(function(link) { link.classList.remove('active'); });
+                    navLinks[n].classList.add('active');
+                    break;
+                }
+            }
+        }
+
+        window.addEventListener('scroll', updateBackground);
+        updateBackground();
+
+        // ---- FADE IN ON SCROLL ----
+        var fadeEls = document.querySelectorAll('.fade-in');
+
+        function checkFadeIn() {
+            fadeEls.forEach(function(el) {
+                var rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight - 80) {
+                    el.classList.add('visible');
+                }
+            });
+        }
+
+        window.addEventListener('scroll', checkFadeIn);
+        checkFadeIn();
+    </script>
+</body>
+</html>
